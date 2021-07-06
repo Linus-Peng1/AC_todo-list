@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
+const bodyParser = require('body-parser')
 const Todo = require('./models/todo')
 
 const app = express()
@@ -27,6 +28,26 @@ app.get('/', (req, res) => {
     .lean() // 將 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
     .then(todos => res.render('index', { todos })) // 將資料傳給 index 樣板
     .catch(error => console.error(error)) // 錯誤處理
+})
+
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// 設定路由
+app.get('/todos/new', (req, res) => {
+  res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const name = req.body.name
+  // 作法一: 直接操作 Todo
+  return Todo.create({ name }) // ({ name: name}) 縮寫
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+
+  // 作法二: 先產生物件實例，再把實例存入 Todo
+  // return Todo.create({name})
+  //   .then(() => res.redirect('/'))
+  //   .catch(error => console.log(error))
 })
 
 app.listen(3000, () => {
