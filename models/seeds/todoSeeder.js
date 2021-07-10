@@ -1,15 +1,7 @@
-const mongoose = require('mongoose')
 const Todo = require('../todo')
+const db = require('../../config/mongoose')
 
-mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true })
-
-// 取得資料庫連線狀態
-const db = mongoose.connection
-// 連線異常
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-// 連線成功
+// 執行完 mongoose.js 後，繼續執行後續動作
 db.once('open', () => {
   console.log('mongodb connected!')
   for (let i = 0; i < 10; i++) {
