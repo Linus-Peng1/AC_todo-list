@@ -9,12 +9,19 @@ router.get('/new', (req, res) => {
   res.render('new')
 })
 
+// 新增 todo
 router.post('/', (req, res) => {
-  const name = req.body.name
-  // 作法一: 直接操作 Todo
-  return Todo.create({ name }) // ({ name: name}) 縮寫
+  // 補充功能: 一次加入多個素
+  const todos = (req.body.name).split(',').map(todo => ({ name: todo }))
+  return Todo.insertMany(todos) 
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
+  
+  // const name = req.body.name
+  // // 作法一: 直接操作 Todo
+  // return Todo.create({ name }) // ({ name: name}) 縮寫
+  //   .then(() => res.redirect('/'))
+  //   .catch(error => console.log(error))
 
   // 作法二: 先產生物件實例，再把實例存入 Todo
   // return Todo.create({name})
